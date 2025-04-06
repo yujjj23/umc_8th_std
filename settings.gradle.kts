@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Timer"
+rootProject.name = "thread_simple"
 include(":app")
  
