@@ -1,4 +1,4 @@
-package com.example.timer.ui.theme
+package com.example.test.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
