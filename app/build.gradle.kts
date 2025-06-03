@@ -1,10 +1,9 @@
-import org.jetbrains.kotlin.cfg.pseudocode.and
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("kotlin-kapt")
+    id("com.google.gms.google-services") version "4.4.1" // ✅ 반드시 버전 명시!
 }
 
 android {
@@ -17,7 +16,6 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -30,14 +28,18 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
+
     buildFeatures {
+        dataBinding = true
         viewBinding = true
         compose = true
     }
@@ -52,12 +54,23 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
-    // ✅ Room
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.recyclerview:recyclerview:1.3.1")
+    implementation("androidx.viewpager2:viewpager2:1.1.0-beta01")
+
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
+
+    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("com.google.android.material:material:1.9.0")
+    implementation("me.relex:circleindicator:2.1.6")
+
+    // 소셜 로그인
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.kakao.sdk:v2-user:2.19.0")
+    implementation("com.navercorp.nid:oauth:5.6.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
