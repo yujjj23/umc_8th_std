@@ -1,10 +1,13 @@
 package com.example.test
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -12,48 +15,42 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.CustomerAdapter
-import com.example.Profile
-import com.example.ProfileDatabase
+import com.example.HomeFragment
 import com.example.test.databinding.ActivityMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 import java.util.ArrayList
 
-class MainActivity : ComponentActivity() {
-    var list=ArrayList<Profile>()
-    lateinit var customerAdapter: CustomerAdapter
-    lateinit var db: ProfileDatabase
-
-    lateinit var binding: ActivityMainBinding
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding= ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
 
-        db=ProfileDatabase.getInstance(this)!!
+        // 초기 홈 프래그먼트 설정
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.nav_host_fragment, HomeFragment())
+            .commit()
 
-        Thread{
-            val savedContacts= db.profileDao().getAll()
-            if(savedContacts.isNotEmpty()){
-                list.addAll(savedContacts)
+        // 바텀 네비게이션 설정
+        findViewById<BottomNavigationView>(R.id.bottom_nav).setOnItemSelectedListener {
+            val fragment = when (it.itemId) {
+                R.id.menu_home -> HomeFragment()
+                R.id.menu_library -> LibraryFragment()
+                else -> HomeFragment()
             }
-        }.start()
-
-        binding.button.setOnClickListener{
-            Thread{
-                list.add(Profile("베어","24","0000"))
-                db.profileDao().insert(Profile("베어","24","0000"))
-
-                val list=db.profileDao().getAll()
-                Log.d("inserted Primary key", list[list.size-1].id.toString())
-            }.start()
-            customerAdapter.notifyDataSetChanged()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment, fragment)
+                .commit()
+            true
         }
 
-        customerAdapter= CustomerAdapter(list, this)
-
-        binding.mainProfileLv.adapter=customerAdapter
+        // ✅ 로그인 버튼 클릭 시 LoginActivity로 이동
+        findViewById<Button>(R.id.btn_login).setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
     }
-
 }
+
+
 
